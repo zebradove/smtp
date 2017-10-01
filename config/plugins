@@ -51,6 +51,7 @@ mail_from.is_resolvable
 # RCPT TO
 # At least one rcpt_to plugin is REQUIRED for inbound email. The simplest
 # plugin is in_host_list, see 'haraka -h rcpt_to.in_host_list' to configure.
+rcpt_to.zebradove
 rcpt_to.in_host_list
 #rcpt_to.qmail_deliverable
 #rcpt_to.ldap
