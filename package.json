@@ -2,7 +2,9 @@
   "name": "haraka_local",
   "description": "An SMTP Server",
   "version": "0.0.1",
-  "dependencies": {},
+  "dependencies": {
+    "http2": "^3.3.7"
+  },
   "repository": "",
   "license": "MIT"
 }
