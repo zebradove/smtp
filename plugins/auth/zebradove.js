@@ -1,4 +1,4 @@
-const http2 = require('http2')
+const http2 = require('../../lib/http2')
 
 exports.register = function () {
   this.inherits('auth/auth_base')
@@ -23,25 +23,17 @@ exports.hook_capabilities = async function (next, connection) {
 }
 
 exports.check_plain_passwd = async function (connection, username, password, next) {
-  const req = http2.request({
-    hostname: this.cfg.main.hostname,
-    port: parseInt(this.cfg.main.port),
-    path: '/authenticate',
-    method: 'POST',
-    auth: `smtp:${this.cfg.main.secret}`,
-    rejectUnauthorized: false
-  })
-  let data = ''
-  req.on('response', res => {
-    res.on('data', chunk => { data += chunk.toString('utf8') })
-    res.on('end', () => {
-      connection.logdebug(this, data)
-      const response = JSON.parse(data)
-      if (response && response.valid) {
-        return next(true)
-      }
-      return next(false)
-    })
-  })
-  req.end(JSON.stringify({username, password}))
+  try {
+    const response = await http2.request({
+      hostname: this.cfg.main.hostname,
+      port: parseInt(this.cfg.main.port),
+      path: '/authenticate',
+      method: 'POST',
+      auth: `smtp:${this.cfg.main.secret}`,
+      rejectUnauthorized: false
+    }, {username, password})
+    next(response.body.valid)
+  } catch (ex) {
+    next(false)
+  }
 }
