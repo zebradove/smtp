@@ -1,7 +1,6 @@
 const http2 = require('../lib/http2')
 
 exports.register = function () {
-  this.inherits('auth/auth_base')
   this.load_zebradove_api_ini()
 }
 
@@ -24,7 +23,7 @@ exports.hook_rcpt = async function (next, connection, params) {
       rejectUnauthorized: false
     }, {name: rcpt.address(), from: mfrom.address()})
     const body = response.body
-    if (!body.valid) return next('DENY', 'User does not exist')
+    if (!body.valid) return next(DENY, 'User does not exist')
     connection.logdebug(this, body)
     rcpt.user = body.user
     rcpt.host = body.host
@@ -32,6 +31,6 @@ exports.hook_rcpt = async function (next, connection, params) {
     next()
   } catch (ex) {
     connection.logerror(this, ex)
-    next('DENY', 'Internal error')
+    next(DENYSOFT, 'Internal error')
   }
 }
